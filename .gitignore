@@ -1,0 +1,13 @@
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# Vi cache #
+############
+*.swp
+
+bla
+var/cache/*
+var/*.log
