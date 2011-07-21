@@ -1,0 +1,134 @@
+* { outline: 0; }
+img { border: 0; vertical-align: middle;}
+
+a { text-decoration: none; color:#8C8980;}
+
+html, body {
+height:100%;
+}
+
+body {
+background-color:#FAF8ED;
+color:#8C8980;
+font-family:'Verdana', 'Helvetica', 'Sans-serif', 'sans';
+font-size:12px;
+margin:0;
+padding:0;
+}
+
+#header {
+z-index: 500;
+position: fixed;
+height:52px;
+width: 100%;
+top: 0px;
+}
+
+#navMenu {
+height:20px;
+padding:2px;
+margin:0;
+background-color:#464139;
+color:#F5F5F5;
+border-top:1px solid #474540;
+}
+
+#navMenu li {
+display:inline;
+}
+
+li.navRight {
+float:right;
+}
+
+#navMenu a {
+color:#989382;
+display:block;
+float:left;
+padding-left:10px;
+padding-right:20px;
+}
+
+#subNavMenu {
+height:20px;
+padding:2px;
+background-color:#BFBA9F;
+border-top:1px solid #DAD8BD;
+border-bottom:1px solid #989382;
+margin:0;
+}
+
+#subNavMenu li {
+float: left;
+margin-left: 6px;
+padding-right: 30px;
+padding-left: 30px;
+border-right:1px solid #CBC7AD;
+width: auto;
+text-align: center;
+list-style-type: none;
+}
+
+#subNavMenu a {
+color:#474540;
+font-weight: bold;
+}
+
+#content {
+padding-left: 10px;
+padding-right: 10px;
+margin-top: 55px;
+}
+
+#showList {
+width:100%;
+padding:0;
+margin:0;
+border-spacing:0;
+}
+
+#showList THEAD TH {
+height:30px;
+border-bottom:1px solid #BFBA9F;
+background-color:#ECE9D9;
+}
+
+#showList TH {
+}
+
+#showList TD {
+height:30px;
+border-top:1px solid #FFF;
+border-bottom:1px solid #EEEADA;
+}
+
+#showList TBODY TR:HOVER {
+background-color: #F7F5E5;
+}
+
+#showInfo {
+float:left;
+width:35%;
+border:1px solid #D3CFBB;
+background-color: #ECE9D9;
+height:600px;
+padding:5px;
+}
+
+#episodeInfo {
+padding:5px;
+float:right;
+width:60%;
+}
+
+#footer {
+z-index: 500;
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+height: 20px;
+text-align: center;
+background-color: #ECE9D9;
+border-top: 1px solid #989382;
+}

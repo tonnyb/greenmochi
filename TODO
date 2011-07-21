@@ -1,0 +1,12 @@
+- Check for new airdates
+	- Show manager thread update
+		* Airdates
+		* Episode count
+- Postprocessor
+	- Cleanup empty dir
+- MySQL class
+- Split into new threads
+	- Backlog
+	- Version Checker
+	- RSS-SEARCH
+	- Postprocessor
