@@ -20,7 +20,7 @@ To run Green Mochi you will need php 5.3.x and MySQL server, apache / nginx opti
 Green Mochi makes use of the following projects:
 
 * [php 5.3.x][php]
-* [mysq][mysql]
+* [MySQL][mysql]
 * [jQuery][jquery]
 * [SABNzbd][sabnzbd]
 
