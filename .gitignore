@@ -11,3 +11,4 @@
 bla
 var/cache/*
 var/*.log
+test/*
