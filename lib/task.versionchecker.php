@@ -30,11 +30,12 @@ class TaskVersionChecker extends Task {
 			foreach ( $shows as $show ) {
 				$this->logInfo('Updating %s', $show->getName());
 				$showInfo = (Array) ShowInfo::getShowInfo( $show->getName() );
+				$title = $show->getTitle();
 				$show->setShowInfo( $showInfo );
 
 				$air = new AirdateScraper();
 				$this->logInfo('Checking airdates for ' . $show->getVarName());
-				$airdates = (array) $air->getByTitle( $show->getTitle(), $show->getVarName() );
+				$airdates = (array) $air->getByTitle( $title, $show->getVarName() );
 
 				$show->getMissingEpisodes(array('airdates' => $airdates));
 				ShowController::saveShow($show, true, true);

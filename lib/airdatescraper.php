@@ -79,7 +79,15 @@ class AirdateScraper {
 		$replace = str_replace("2nd Season", "2", $title);
 		if ( $result = $this->getReplaces($replace) ) return $result;
 
+		$replace = preg_replace("/[aeiou]/s", "%", $title);
+		if ( $result = $this->getReplaces($replace) ) return $result;
+
+		$replace = preg_replace("/[^a-zA-Z0-9\-\_\!\s]/", "%", $title);
+		if ( $result = $this->getReplaces($replace) ) return $result;
+
+
 		if ( !$varname && $title == $varname ) return false;
+
 		//Varname
 		if ( $result = $this->getReplaces($varname) ) return $result;
 
@@ -87,6 +95,12 @@ class AirdateScraper {
 		if ( $result = $this->getReplaces($replace) ) return $result;
 
 		$replace = str_replace("2nd Season", "2", $varname);
+		if ( $result = $this->getReplaces($replace) ) return $result;
+
+		$replace = preg_replace("/[aeiou]/s", "%", $varname);
+		if ( $result = $this->getReplaces($replace) ) return $result;
+
+		$replace = preg_replace("/[^a-zA-Z0-9\-\_\!\s]/", "%", $varname);
 		if ( $result = $this->getReplaces($replace) ) return $result;
 
 		return false;
