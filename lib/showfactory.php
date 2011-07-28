@@ -44,9 +44,11 @@ class ShowFactory extends Factory {
 	public static function getShows($array = array()) {
 		$db = DB::getInstance();
 		$queryAdd = self::parseQuery($array);
+		$queryHead = self::parseQuery($array, 'head');
 		$shows = array();
 		$qstring = implode($queryAdd);
-		$sql = $db->fsql("SELECT showid FROM shows where episodes != 0 %s", $qstring);
+		$qhstring = implode($queryHead);
+		$sql = $db->fsql("SELECT shows.showid FROM shows %s where shows.episodes != 0 %s", $qhstring, $qstring);
 		while( $result = $db->fetchArray($sql) ) {
 			$showid = $result['showid'];
 			$shows[$showid] = self::getById($showid);

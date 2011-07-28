@@ -106,6 +106,7 @@ class Config {
 			'episode' => array(
 				'search' => array(
 					'search_frequency' => 60,
+					'search_frequency_backlog' => 1,
 					'usenet_retention' => 400,
 				),
 				'episode' => array(

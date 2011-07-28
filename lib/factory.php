@@ -2,9 +2,13 @@
 
 class Factory {
 
-	public static function parseQuery($array = array()) {
+	public static function parseQuery($array = array(), $return = 'default') {
 
 		$queryAdd = array();
+
+		$queryAdd['default'] = array();
+		$queryAdd['head'] = array();
+
 		$showid = false;
 		foreach( $array as $key => $value ) {
 			if ( $key == "order" ) {
@@ -12,32 +16,39 @@ class Factory {
 				continue;
 			}
 
-			if ( is_array($value) ) {
-				$queryAdd[] = sprintf(" AND %s BETWEEN %d AND %d ", $key, $value[0], $value[1]);
+			if( preg_match("/JOIN (.*?)/s", $key, $matches) ) {
+				$queryAdd['head'][] = sprintf(" %s ON %s ", $key, $value);
 			}
 			else {
-				if ( is_int($value) ) $add = sprintf('%d', $value);
-				else $add = sprintf('"%s"', $value);
 
-				$exp = "=";
-				if ( preg_match("/\!/", $key) ) {
-					$exp = "!=";
-					$key = str_replace("!", "", $key);
+				if ( is_array($value) ) {
+					$queryAdd['default'][] = sprintf(" AND %s BETWEEN %d AND %d ", $key, $value[0], $value[1]);
 				}
-				if ( preg_match("/>/", $key) ) {
-					$exp = ">=";
-					$key = str_replace(">", "", $key);
-				}
-				if ( preg_match("/</", $key) ) {
-					$exp = "<=";
-					$key = str_replace("<", "", $key);
+				else {
+					if ( is_int($value) ) $add = sprintf('%d', $value);
+					else $add = sprintf('"%s"', $value);
+
+					$exp = "=";
+					if ( preg_match("/\!/", $key) ) {
+						$exp = "!=";
+						$key = str_replace("!", "", $key);
+					}
+					if ( preg_match("/>/", $key) ) {
+						$exp = ">=";
+						$key = str_replace(">", "", $key);
+					}
+					if ( preg_match("/</", $key) ) {
+						$exp = "<=";
+						$key = str_replace("<", "", $key);
+					}
+
+					$queryAdd['default'][] = sprintf(" AND %s %s %s ", $key, $exp, $add);
 				}
 
-				$queryAdd[] = sprintf(" AND %s %s %s ", $key, $exp, $add);
 			}
 		}
 
-		return $queryAdd;
+		return $queryAdd[$return];
 	}
 
 }
