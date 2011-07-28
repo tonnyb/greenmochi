@@ -12,3 +12,4 @@ bla
 var/cache/*
 var/*.log
 test/*
+var/config.php
