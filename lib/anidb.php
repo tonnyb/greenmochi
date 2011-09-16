@@ -21,34 +21,30 @@ class AniDB {
 	public function updateDB() {
 		self::$check = false;
 		$db = DB::getInstance();
-		$db->sql('START TRANSACTION');
 		$content = Curl::sendRequest('http://anidb.net/api/animetitles.dat.gz', 'GET', array('gzip' => true));
 		$array = explode("\n", $content);
-		$maxItems = 100;
 		$i=0;
-		$items = array();
+		$maxItems = 100;
+		$count = count($array);
+		$db->sql('START TRANSACTION');
 		foreach ( $array as $item ) {
 			if ( !preg_match("/^#/", $item) ) {
 				$arr = explode("|", $item);
 				if ( isset($arr[1]) ) {
-					if ( $i == $maxItems ) {
-						$db->fsql('INSERT IGNORE INTO anidb (aid,type,language,title,cdate) VALUES %s', implode(',', $items));
-						$items = array();
+					$db->fsql('INSERT IGNORE INTO anidb (aid,type,language,title,cdate) VALUES (%d, %d, "%s", "%s", %d)', $arr[0], $arr[1], $arr[2], $arr[3], date("U"));
+
+					if ( $i == $maxItems || $i == $count ) {
+						$db->sql('COMMIT');
+						if ( $i < $count ) $db->sql('START TRANSACTION');
 						$i=0;
-						sleep(1);
 					}
-					$items[] = sprintf("(\"%d\", \"%d\", \"%s\", '%s', %d)", $arr[0], $arr[1], $arr[2], $arr[3], date("U"));
-					$i++;
+					else {
+						$i++;
+					}
 				}
 			}
 		}
 
-		if ( count($items) != 0 ) {
-			$db->fsql('INSERT IGNORE INTO anidb (aid,type,language,title,cdate) VALUES %s', implode(',', $items));
-			$items = array();
-			$i=0;
-		}
-		$db->sql('COMMIT');
 		self::$check = true;
 	}
 

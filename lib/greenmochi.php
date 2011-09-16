@@ -8,7 +8,6 @@ class GreenMochi {
 		// TODO: Own System Daemon
 
 		// Make it possible to test in source directory
-		// This is for PEAR developers only
 		//ini_set('include_path', ini_get('include_path').':..');
 
 		// Include Class
@@ -42,57 +41,79 @@ class GreenMochi {
 	public static function run() {
 		self::setup();
 
-		//System_Daemon::log(System_Daemon::LOG_INFO, "Daemon not yet started so ".  "this will be written on-screen");
-		//System_Daemon::start();
-		System_Daemon::init();
-		$runningOkay = true;
+		if ( self::init() ) {
 
-		$start = true;
-		$tasks = array(
-			'VersionChecker',
-			'EpisodeManager',
-			'PostProcessor',
-			'Backlog',
-			'httpd',
-		);
-		import('taskmanager');
-
-		while (!System_Daemon::isDying() && $runningOkay) {
+			//System_Daemon::log(System_Daemon::LOG_INFO, "Daemon not yet started so ".  "this will be written on-screen");
+			//System_Daemon::start();
+			System_Daemon::init();
 			$runningOkay = true;
 
-			if ( $start ) {
+			$start = true;
+			$tasks = array(
+				'VersionChecker',
+				'EpisodeManager',
+				'PostProcessor',
+				'Backlog',
+				'httpd',
+			);
+			import('taskmanager');
 
-				// Adding the tasks
-				$taskmanager = new TaskManager();
-				foreach ( $tasks as $task ) {
-					$class = "Task" . $task;
-					import('task.'.$task);
-					try {
-						$taskmanager->add_task(new $class());
+			while (!System_Daemon::isDying() && $runningOkay) {
+				$runningOkay = true;
+
+				if ( $start ) {
+
+					// Adding the tasks
+					$taskmanager = new TaskManager();
+					foreach ( $tasks as $task ) {
+						$class = "Task" . $task;
+						import('task.'.$task);
+						try {
+							$taskmanager->add_task(new $class());
+						}
+						catch (Exception $e) {
+							$runningOkay = false;
+						}
 					}
-					catch (Exception $e) {
-						$runningOkay = false;
-					}
+
+					if ( $runningOkay ) $taskmanager->run();
+					$start = false;
 				}
 
-				if ( $runningOkay ) $taskmanager->run();
-				$start = false;
+				if (!$runningOkay) {
+					System_Daemon::err('mochi() produced an error, '.  'so this will be my last run');
+				}
+			 
+				//posix_kill(posix_getpid(), SIGTERM);
+				// Relax the system by sleeping for a little bit
+				// iterate also clears statcache
+				System_Daemon::iterate(2);
+			 
 			}
 
-			if (!$runningOkay) {
-				System_Daemon::err('mochi() produced an error, '.  'so this will be my last run');
-			}
-		 
-			//posix_kill(posix_getpid(), SIGTERM);
-			// Relax the system by sleeping for a little bit
-			// iterate also clears statcache
-			System_Daemon::iterate(2);
-		 
+			System_Daemon::stop();
+
 		}
 
-		System_Daemon::stop();
+	}
+
+	private static function init() {
+		// Check databases and import other stuff initial check
+		import('anidb');
+		import('airdatescraper');
+
+		if ( AniDB::checkIntegrity() ) {
+			//$this->logInfo('Updating AniDB');
+			AniDB::updateDB();
+		}
+		if ( AirdateScraper::checkIntegrity() ) {
+			//$this->logInfo('Updating AnimeCalendar');
+			AirdateScraper::updateDB();
+		}
+
+		return true;
 	}
 
 }
 
-
+?>

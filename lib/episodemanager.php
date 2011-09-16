@@ -22,7 +22,7 @@ class EpisodeManager extends Task {
 			break;
 			case 'new':
 			default:
-				$shows = ShowFactory::getShows(array('download' => 1, 'scan' => 0, '<enddate' => date('Y-m-d', $airdateTo), 'enddate' => 0));
+				$shows = ShowFactory::getShows(array('download' => 1, 'scan' => 0, '>enddate' => date('Y-m-d', $airdateTo), '|enddate' => 0));
 			break;
 		}
 

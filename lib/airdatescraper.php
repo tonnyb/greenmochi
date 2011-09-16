@@ -25,11 +25,10 @@ class AirdateScraper {
 		//$content = file_get_contents( BASE_PATH . "temp");
 
 		$db = DB::getInstance(1);
-		$db->sql('START TRANSACTION');
 		preg_match_all("/<a href=\"\/show\/([0-9]+)\/(.*)\">(.*)<\/a>/", $content, $matches);
-		$maxItems = 500;
+		$maxItems = 100;
 		$i=0;
-		$items = array();
+		$count = count($matches[1]);
 		foreach ( $matches[1] as $key => $id ) {
 			$titles = $matches[3];
 			$names = $matches[2];
@@ -37,22 +36,19 @@ class AirdateScraper {
 			$name = $names[$key];
 			$title = $titles[$key];
 
-			if ( $i == $maxItems ) {
-				$db->fsql('INSERT IGNORE INTO acdb (id,title,cdate) VALUES %s', implode(',', $items));
+			$db->fsql('INSERT IGNORE INTO acdb (id,title,cdate) VALUES (%d, "%s", %d)', $id, $title, date("U"));
+
+			if ( $i == $maxItems || $i == $count ) {
+				$db->sql('COMMIT');
+				if ( $i < $count ) $db->sql('START TRANSACTION');
 				$i=0;
-				$items = array();
+			}
+			else {
+				$i++;
 			}
 
-			$items[] = sprintf('(%d, "%s", %d)', $id, $title, date("U"));
-			$i++;
 		}
 
-		if ( count($items) != 0 ) {
-			$db->fsql('INSERT IGNORE INTO acdb (id,title,cdate) VALUES %s', implode(',', $items));
-			$i=0;
-			$items = array();
-		}
-		$db->sql('COMMIT');
 		self::$check = true;
 	}
 

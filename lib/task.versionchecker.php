@@ -16,11 +16,12 @@ class TaskVersionChecker extends Task {
 
 		while( $this->pid ) {
 
-			if ( AniDB::checkIntegrity() ) {
+			// Fix those 2 items untill we can create an incremental update
+			if ( 0 && AniDB::checkIntegrity() ) {
 				$this->logInfo('Updating AniDB');
 				AniDB::updateDB();
 			}
-			if ( AirdateScraper::checkIntegrity() ) {
+			if ( 0 && AirdateScraper::checkIntegrity() ) {
 				$this->logInfo('Updating AnimeCalendar');
 				AirdateScraper::updateDB();
 			}

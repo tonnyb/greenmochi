@@ -14,12 +14,10 @@ class TaskEpisodeManager extends EpisodeManager {
 
 		while( $this->pid ) {
 			if ( $scanOnStart || date("U") > $nextScan ) {
-				if ( !AniDB::checkIntegrity() ) {
-					$this->runManager();
-					$nextScan = date("U") + $scanTime;
-					$scanOnStart = false;
-					$scanTime = ( $config->get('search', 'search_frequency') * 60 );
-				}
+				$this->runManager();
+				$nextScan = date("U") + $scanTime;
+				$scanOnStart = false;
+				$scanTime = ( $config->get('search', 'search_frequency') * 60 );
 			}
 			$this->iterate(2);
 		}

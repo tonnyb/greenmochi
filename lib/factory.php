@@ -28,7 +28,12 @@ class Factory {
 					if ( is_int($value) ) $add = sprintf('%d', $value);
 					else $add = sprintf('"%s"', $value);
 
+					$and = "AND";
 					$exp = "=";
+					if ( preg_match("/\|/", $key) ) {
+						$and = "OR";
+						$key = str_replace("|", "", $key);
+					}
 					if ( preg_match("/\!/", $key) ) {
 						$exp = "!=";
 						$key = str_replace("!", "", $key);
@@ -42,7 +47,7 @@ class Factory {
 						$key = str_replace("<", "", $key);
 					}
 
-					$queryAdd['default'][] = sprintf(" AND %s %s %s ", $key, $exp, $add);
+					$queryAdd['default'][] = sprintf(" %s %s %s %s ", $and, $key, $exp, $add);
 				}
 
 			}
